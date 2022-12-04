@@ -25,7 +25,17 @@ STOP.update(['”', '“', '’', "'"])
 nltk.download('stopwords')
 nltk.download('punkt')
 
-app = FastAPI()
+app = FastAPI(
+    title="Text Summarizer",
+    description="Summarize your text in just a few clicks using spacy and nltk 📜",
+    version="1.0.0",
+    contact={
+        "name": "bandersnatchx64",
+        "url": "https://twitter.com/bandersnatchx64",
+        "email": "lordareello@gmail.com",
+    },
+    
+)
 
 templates = Jinja2Templates(directory="templates")
 
