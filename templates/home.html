@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- tailwind cdn -->
+        <link
+            href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+            rel="stylesheet"
+        />
+        <title>Summerizer.Ai</title>
+    </head>
+    <body>
+        <!-- padded container including top and below -->
+        <div class="container mx-auto px-4 py-2">
+            <!-- text area inside padded div for the text to be summerized -->
+            <div class="p-5 bg-gray-200 rounded-lg">
+                <textarea
+                    class="w-full"
+                    name="text"
+                    id="text"
+                    cols="30"
+                    rows="10"
+                    placeholder="Enter your text here"
+                ></textarea>
+            </div>
+            <!-- number of lines between 1 and 10-->
+            <div class="p-2 flex justify-center">
+                <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    class="w-1/6"
+                    id="lines"
+                    name="n"
+                    placeholder="Number of lines"
+                />
+            </div>
+            <!-- choose what summerizer to use as a dropwdown  -->
+            <div class="p-2 flex justify-center">
+                <select
+                    name="summerizer"
+                    id="summerizer"
+                    class="w-1/6 p-2 rounded-lg"
+                >
+
+                    <option value="nltk">NLTK</option>
+                    <option value="spacy">Spacy</option>
+                </select>
+            </div>
+            <!-- button to submit the text -->
+            <div class="p-5 flex justify-center">
+                <button class="bg-blue-500 p-2 rounded text-white" id="submit">
+                    Submit
+                </button>
+            </div>
+        <!-- response textarea for summerized text -->
+            <div class="p-5 bg-gray-200 rounded-lg">
+                <textarea
+                    class="w-full"
+                    name=""
+                    id="summary"
+                    cols="30"
+                    rows="10"
+                    placeholder="Summerized text will appear here"
+                ></textarea>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+            const text = document.getElementsByID("text");
+            const lines = document.getElementById("lines");
+            const summary = document.getElementById("summary");
+            const submit = document.getElementById("submit");
+            const summerizer = document.getElementById("summerizer");
+
+            // if the value of summerizer is NLTK then use the NLTK summerizer endpoint
+            // else use the spacy summerizer endpoint
+            submit.addEventListener("click", () => {
+                if (summerizer.value === "nltk") {
+                    $.ajax({
+                        url: "/nltk",
+                        type: "POST",
+                        data: JSON.stringify({
+                            text: text.value,
+                            lines: lines.value,
+                        }),
+                        contentType: "application/json",
+                        success: function (response) {
+                            summary.value = response;
+                        },
+                    });
+                } else {
+                    $.ajax({
+                        url: "/spacy",
+                        type: "POST",
+                        data: JSON.stringify({
+                            text: text.value,
+                            lines: lines.value,
+                        }),
+                        contentType: "application/json",
+                        success: function (response) {
+                            summary.value = response;
+                        },
+                    });
+                }
+            });
+
+            /* nltk_summarize.addEventListener("click", () => {
+                const req = new XMLHttpRequest();
+                req.open(
+                    "GET",
+                    `http://127.0.0.1:8000/nltk_summarize?text=${text.value}&n=${n_lines}`,
+                    true
+                );
+                req.onload = () => {
+                    console.log("returned:", req.responseText);
+                    summary.value = req.responseText;
+                };
+                req.send();
+            });
+
+            spacy_summarize.addEventListener("click", () => {
+                const req = new XMLHttpRequest();
+                req.open(
+                    "GET",
+                    `http://127.0.0.1:8000/nltk_summarize?text=${text.value}&n=${n_lines}`,
+                    true
+                );
+                req.onload = () => {
+                    console.log("returned:", req.responseText);
+                    summary.value = req.responseText;
+                };
+                req.send();
+            });
+            lines.addEventListener("change", () => {
+                n_lines = lines.value;
+            }); */
+        </script>
+    </body>
+</html>
