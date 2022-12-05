@@ -154,7 +154,7 @@ async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 @app.post("/nltk")
-async def summarize(request:Request):
+async def summarize(request:Request, text: Optional[str] = Form(None), n: Optional[int] = Form(None)):
     data = await request.form()
     text = data['text']
     n = int(data['n'])
@@ -163,7 +163,7 @@ async def summarize(request:Request):
     return summary
     
 @app.post("/spacy")
-async def summarize(request:Request):
+async def summarize(request:Request, text: Optional[str] = Form(None), n: Optional[int] = Form(None)):
     data = await request.form()
     text = data['text']
     n = int(data['n'])
