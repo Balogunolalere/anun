@@ -69,74 +69,47 @@
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script>
-            const text = document.getElementsByID("text");
-            const lines = document.getElementById("lines");
+            const text = document.getElementById("text");
+            const n = document.getElementById("lines");
             const summary = document.getElementById("summary");
             const submit = document.getElementById("submit");
             const summerizer = document.getElementById("summerizer");
 
-            // if the value of summerizer is NLTK then use the NLTK summerizer endpoint
-            // else use the spacy summerizer endpoint
+            // get text and n as a form data
+            const getFormData = () => {
+                const formData = new FormData();
+                formData.append("text", text.value);
+                formData.append("n", n.value);
+                formData.append("summerizer", summerizer.value);
+                return formData;
+            };
+
+            // if summerizer is spacy then send the request to spacy api else send to nltk api
             submit.addEventListener("click", () => {
                 if (summerizer.value === "nltk") {
                     $.ajax({
                         url: "/nltk",
                         type: "POST",
-                        data: JSON.stringify({
-                            text: text.value,
-                            lines: lines.value,
-                        }),
-                        contentType: "application/json",
-                        success: function (response) {
-                            summary.value = response;
+                        data: getFormData(),
+                        processData: false,
+                        contentType: false,
+                        success: (data) => {
+                            summary.value = data;
                         },
                     });
                 } else {
                     $.ajax({
                         url: "/spacy",
                         type: "POST",
-                        data: JSON.stringify({
-                            text: text.value,
-                            lines: lines.value,
-                        }),
-                        contentType: "application/json",
-                        success: function (response) {
-                            summary.value = response;
+                        data: getFormData(),
+                        processData: false,
+                        contentType: false,
+                        success: (data) => {
+                            summary.value = data;
                         },
                     });
                 }
             });
-
-            /* nltk_summarize.addEventListener("click", () => {
-                const req = new XMLHttpRequest();
-                req.open(
-                    "GET",
-                    `http://127.0.0.1:8000/nltk_summarize?text=${text.value}&n=${n_lines}`,
-                    true
-                );
-                req.onload = () => {
-                    console.log("returned:", req.responseText);
-                    summary.value = req.responseText;
-                };
-                req.send();
-            });
-
-            spacy_summarize.addEventListener("click", () => {
-                const req = new XMLHttpRequest();
-                req.open(
-                    "GET",
-                    `http://127.0.0.1:8000/nltk_summarize?text=${text.value}&n=${n_lines}`,
-                    true
-                );
-                req.onload = () => {
-                    console.log("returned:", req.responseText);
-                    summary.value = req.responseText;
-                };
-                req.send();
-            });
-            lines.addEventListener("change", () => {
-                n_lines = lines.value;
-            }); */
         </script>
     </body>
 </html>
